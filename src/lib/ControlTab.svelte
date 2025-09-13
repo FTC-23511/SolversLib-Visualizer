@@ -119,6 +119,37 @@
                 />
               </svg>
             </button>
+            <button
+              title="Insert Line After This One"
+              on:click={() => {
+                const newLine = {
+                  endPoint: {
+                    x: _.random(36, 108),
+                    y: _.random(36, 108),
+                    heading: "tangential",
+                    reverse: false,
+                  },
+                  controlPoints: [],
+                  color: getRandomColor(),
+                };
+                lines.splice(idx + 1, 0, newLine);
+                lines = lines;
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width={2}
+                class="size-5 stroke-blue-500"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                />
+              </svg>
+            </button>
             {#if lines.length > 1}
               <button
                 title="Remove Line"
