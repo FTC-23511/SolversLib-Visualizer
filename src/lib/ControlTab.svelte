@@ -132,8 +132,7 @@
                   controlPoints: [],
                   color: getRandomColor(),
                 };
-                lines.splice(idx + 1, 0, newLine);
-                lines = lines;
+               lines = [...lines.slice(0, idx + 1), newLine, ...lines.slice(idx + 1)];
               }}
             >
               <svg
