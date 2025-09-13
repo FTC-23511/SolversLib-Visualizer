@@ -16,7 +16,11 @@
             console.log("Service worker registration successful:", registration);
           },
           (error) => {
-            console.error(`Service worker registration failed: ${error}`);
+            if (error.message && error.message.includes('StackBlitz')) {
+              console.info('Service workers are not supported in StackBlitz environment - this is expected behavior');
+            } else {
+              console.error(`Service worker registration failed: ${error}`);
+            }
           },
         );
       } else {
