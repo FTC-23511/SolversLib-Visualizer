@@ -504,12 +504,12 @@ hotkeys('s', function(event, handler){
 
 <Navbar bind:lines bind:startPoint {saveFile} {loadFile} {loadRobot}/>
 <div
-  class="w-screen h-screen pt-20 flex flex-row gap-2"
+  class="w-screen h-screen pt-20 p-2 flex flex-row justify-center items-center gap-2"
 >
-  <div class="flex-1 h-full">
+  <div class="flex h-full justify-center items-center">
     <div
       bind:this={twoElement}
-      class="h-full w-full rounded-lg shadow-md bg-neutral-50 dark:bg-neutral-900 relative overflow-clip"
+      class="h-full aspect-square rounded-lg shadow-md bg-neutral-50 dark:bg-neutral-900 relative overflow-clip"
     >
       <img
         src="/fields/decode.webp"
