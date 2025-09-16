@@ -181,15 +181,6 @@
             </div>
             <div class="flex gap-1">
               <button
-                on:click={() => addControlPoint(idx)}
-                title="Add Control Point"
-                class="p-1 text-green-600 hover:bg-green-100 dark:hover:bg-green-900 rounded"
-              >
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-                </svg>
-              </button>
-              <button
                 on:click={() => insertLineAfter(idx)}
                 title="Insert Line After This One"
                 class="p-1 text-blue-600 hover:bg-blue-100 dark:hover:bg-blue-900 rounded"
