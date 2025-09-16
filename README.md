@@ -54,4 +54,7 @@ You can control animations and lines starting point:
 * **Clear All lines made**  
 * **Export the Path to Code - add to other projects**  
 * **Change to Light Mode!**  
-* **Load Robot Picture From a File!**  
+* **Load Robot Picture From a File!**
+
+<img width="85" height="21" alt="image" src="https://github.com/user-attachments/assets/10c6acf7-1333-4bd5-adc8-3ed945a05918" />
+
