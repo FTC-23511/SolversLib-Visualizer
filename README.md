@@ -1,6 +1,6 @@
 <img width="458" height="624" alt="image" src="https://github.com/user-attachments/assets/db1b5f38-5448-40d0-9480-d4716883bac7" /># Pedro Pathing Visualizer
 
-<img src="https://readme-typing-svg.herokuapp.com?font=Arial&size=50&pause=1000&background=2435D700&center=false&vCenter=false&repeat=false&width=500&height=100&lines=Andrew+M" alt="Typing SVG" />
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
 
 
 **Add the Blue Line To add line in between two other existing lines, red line to delete the lines**
@@ -9,7 +9,7 @@
 <img width="415" height="325" alt="image" src="https://github.com/user-attachments/assets/2cdef99b-f381-4d78-a600-b3a2d177fdb5" />
 
 
-<img src="https://readme-typing-svg.herokuapp.com?font=Arial&size=50&pause=1000&background=2435D700&center=false&vCenter=false&repeat=false&width=500&height=100&lines=Andrew+M" alt="Typing SVG" />
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
 
 
 ## Features:
@@ -25,7 +25,7 @@
 
 <img width="458" height="624" alt="image" src="https://github.com/user-attachments/assets/96f911ef-67b3-4309-81ac-40e8cbaf641b" />
 
-<img src="https://readme-typing-svg.herokuapp.com?font=Arial&size=50&pause=1000&background=2435D700&center=false&vCenter=false&repeat=false&width=500&height=100&lines=Andrew+M" alt="Typing SVG" />
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
 
 ## Top Features
 
