@@ -1,47 +1,52 @@
 # Pedro Pathing Visualizer
 
-<p align="left">
-  <b>Add the Blue Line:</b> To add a line in between two existing lines  
-  <br><b>Red Line:</b> To delete lines  
-  <br>Lines are <b>color coded</b>
-</p>
+<table>
+<tr>
+<td align="left" width="60%">
 
-<p align="right">
-  <img width="115" height="156" alt="image" src="https://github.com/user-attachments/assets/db1b5f38-5448-40d0-9480-d4716883bac7" />
-</p>
+<b>Add the Blue Line:</b> To add a line in between two existing lines  
+<br><b>Red Line:</b> To delete lines  
+<br>Lines are <b>color coded</b>
 
-<p align="right">
-  <img width="150" alt="gif" src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" />
-</p>
+</td>
+<td align="right" width="40%">
+
+<img width="115" height="156" alt="image" src="https://github.com/user-attachments/assets/db1b5f38-5448-40d0-9480-d4716883bac7" /><br>
+<img width="150" alt="gif" src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" />
+
+</td>
+</tr>
+</table>
 
 ---
 
 ## Features
 
-<p align="left">
-  <b>Rotate Field</b><br>
-  You can control animations and lines starting point:
-  <ul>
-    <li>Width</li>
-    <li>Height</li>
-    <li>Position</li>
-    <li>Heading</li>
-    <li>Progress for Animations</li>
-    <li>Start point (X, Y coordinates)</li>
-  </ul>
-</p>
+<table>
+<tr>
+<td align="left" width="60%">
 
-<p align="right">
-  <img width="104" height="81" alt="image" src="https://github.com/user-attachments/assets/2cdef99b-f381-4d78-a600-b3a2d177fdb5" />
-</p>
+<b>Rotate Field</b><br>
+You can control animations and lines starting point:
+<ul>
+  <li>Width</li>
+  <li>Height</li>
+  <li>Position</li>
+  <li>Heading</li>
+  <li>Progress for Animations</li>
+  <li>Start point (X, Y coordinates)</li>
+</ul>
 
-<p align="right">
-  <img width="115" height="156" alt="image" src="https://github.com/user-attachments/assets/96f911ef-67b3-4309-81ac-40e8cbaf641b" />
-</p>
+</td>
+<td align="right" width="40%">
 
-<p align="right">
-  <img width="150" alt="gif" src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" />
-</p>
+<img width="104" height="81" alt="image" src="https://github.com/user-attachments/assets/2cdef99b-f381-4d78-a600-b3a2d177fdb5" /><br>
+<img width="115" height="156" alt="image" src="https://github.com/user-attachments/assets/96f911ef-67b3-4309-81ac-40e8cbaf641b" /><br>
+<img width="150" alt="gif" src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" />
+
+</td>
+</tr>
+</table>
 
 ---
 
