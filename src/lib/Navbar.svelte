@@ -144,14 +144,14 @@ ${line.endPoint.reverse ? ".setReversed(true)" : ""}
 >
   <div class="flex flex-row justify-start items-center gap-2">
     <div class="font-semibold flex flex-col justify-start items-start">
-      <div>Pedro Pathing Visualizer</div>
+      <div>SolversLib Visualizer</div>
 
     </div>
     <a
       target="_blank"
       rel="norefferer"
       title="GitHub Repo"
-      href="https://github.com/Pedro-Pathing/Visualizer"
+      href="https://github.com/FTC-23511/SolversLib-Visualizer"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -321,7 +321,7 @@ ${line.endPoint.reverse ? ".setReversed(true)" : ""}
   >
     <div
       transition:fly={{ duration: 500, easing: cubicInOut, y: 20 }}
-      class="flex flex-col justify-start items-start p-4 bg-white dark:bg-neutral-900 rounded-lg w-full max-w-4xl gap-2.5"
+      class="flex flex-col justify-start items-start p-4 2Ωbg-white dark:bg-neutral-900 rounded-lg w-full max-w-4xl gap-2.5"
     >
       <div class="flex flex-row justify-between items-center w-full">
         <p class="text-sm font-light text-neutral-700 dark:text-neutral-400">

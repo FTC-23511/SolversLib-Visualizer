@@ -1,5 +1,5 @@
 const VERSION = "v1";
-const CACHE_NAME = `pedro-visualizer-${VERSION}`;
+const CACHE_NAME = `solverslib-visualizer-${VERSION}`;
 
 const APP_STATIC_RESOURCES = [
   "/",
