@@ -4,14 +4,16 @@
 <tr>
 <td align="left" width="60%">
 
+<font size="5">
 <b>Add the Blue Line:</b> To add a line in between two existing lines  
 <br><b>Red Line:</b> To delete lines  
 <br>Lines are <b>color coded</b>
+</font>
 
 </td>
 <td align="right" width="40%">
 
-<img width="115" height="156" alt="image" src="https://github.com/user-attachments/assets/db1b5f38-5448-40d0-9480-d4716883bac7" /><br>
+<img width="258" height="351" alt="image" src="https://github.com/user-attachments/assets/db1b5f38-5448-40d0-9480-d4716883bac7" />
 
 </td>
 </tr>
@@ -19,12 +21,14 @@
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
 
+
 ## Features
 
 <table>
 <tr>
 <td align="left" width="60%">
 
+<font size="5">
 <b>Rotate Field</b><br>
 You can control animations and lines starting point:
 <ul>
@@ -35,12 +39,13 @@ You can control animations and lines starting point:
   <li>Progress for Animations</li>
   <li>Start point (X, Y coordinates)</li>
 </ul>
+</font>
 
 </td>
 <td align="right" width="40%">
 
-<img width="104" height="81" alt="image" src="https://github.com/user-attachments/assets/2cdef99b-f381-4d78-a600-b3a2d177fdb5" /><br>
-<img width="115" height="156" alt="image" src="https://github.com/user-attachments/assets/96f911ef-67b3-4309-81ac-40e8cbaf641b" /><br>
+<img width="234" height="183" alt="image" src="https://github.com/user-attachments/assets/2cdef99b-f381-4d78-a600-b3a2d177fdb5" /><br>
+<img width="258" height="351" alt="image" src="https://github.com/user-attachments/assets/96f911ef-67b3-4309-81ac-40e8cbaf641b" />
 
 </td>
 </tr>
@@ -48,13 +53,28 @@ You can control animations and lines starting point:
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
 
+
 ## Top Features
 
-* **Export/Import .pp files**  
-* **Clear All lines made**  
-* **Export the Path to Code - add to other projects**  
-* **Change to Light Mode!**  
-* **Load Robot Picture From a File!**
+<table>
+<tr>
+<td align="left" width="60%">
 
-<img width="85" height="21" alt="image" src="https://github.com/user-attachments/assets/10c6acf7-1333-4bd5-adc8-3ed945a05918" />
+<font size="5">
+<ul>
+  <li><b>Export/Import .pp files</b></li>
+  <li><b>Clear All lines made</b></li>
+  <li><b>Export the Path to Code - add to other projects</b></li>
+  <li><b>Change to Light Mode!</b></li>
+  <li><b>Load Robot Picture From a File!</b></li>
+</ul>
+</font>
 
+</td>
+<td align="right" width="40%">
+
+<img width="192" height="48" alt="image" src="https://github.com/user-attachments/assets/10c6acf7-1333-4bd5-adc8-3ed945a05918" />
+
+</td>
+</tr>
+</table>
