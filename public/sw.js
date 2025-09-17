@@ -3,9 +3,8 @@ const CACHE_NAME = `solverslib-visualizer-${VERSION}`;
 
 const APP_STATIC_RESOURCES = [
   "/",
-  "/fields/centerstage.webp",
-  "/fields/intothedeep.webp",
   "/fields/decode.webp",
+  "/fields/decode-light.webp",
   "/robot.png",
   "/assets/index.js",
   "/assets/index.css",
