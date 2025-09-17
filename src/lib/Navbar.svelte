@@ -165,7 +165,7 @@ ${line.endPoint.reverse ? ".setReversed(true)" : ""}
     </a>
   </div>
   <div class="flex flex-row justify-end items-end gap-3">
-    <button title="Save trajectory as a file" on:click={() => saveFile()}>
+    <button title="Save trajectory as a .p2p file" on:click={() => saveFile()}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
