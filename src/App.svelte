@@ -377,7 +377,7 @@
     const url = URL.createObjectURL(blob);
 
     linkObj.href = url;
-    linkObj.download = "trajectory.pp";
+    linkObj.download = "trajectory.p2p";
 
     document.body.appendChild(linkObj);
 

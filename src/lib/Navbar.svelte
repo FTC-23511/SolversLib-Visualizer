@@ -184,7 +184,7 @@ ${line.endPoint.reverse ? ".setReversed(true)" : ""}
     <input
       id="file-input"
       type="file"
-      accept=".pp"
+      accept=".p2p"
       on:change={loadFile}
       class="hidden"
     />

@@ -62,7 +62,7 @@ You can control animations and lines starting point:
 
 <font size="5">
 <ul>
-  <li><b>Export/Import .pp files</b></li>
+  <li><b>Export/Import .p2p files</b></li>
   <li><b>Clear All lines made</b></li>
   <li><b>Export the Path to Code - add to other projects</b></li>
   <li><b>Change to Light Mode!</b></li>
