@@ -17,6 +17,7 @@
     shortestRotation,
   } from "./utils";
   import hotkeys from 'hotkeys-js';
+  import { darkMode } from "./stores";
 
   let two: Two;
   let twoElement: HTMLDivElement;
@@ -27,8 +28,7 @@
   let robotHeight = 16;
 
   let percent: number = 0;
-
-
+  let fieldRotation: number = 0; // 0, 90, 180, 270 degrees
 
   /**
    * Converter for X axis from inches to pixels.
@@ -45,6 +45,35 @@
     .scaleLinear()
     .domain([0, 144])
     .range([twoElement?.clientHeight ?? 144, 0]);
+
+  // Transform coordinates based on field rotation
+  function transformCoordinates(point: BasePoint): BasePoint {
+    const centerX = 72;
+    const centerY = 72;
+    
+    // Translate to origin
+    let x = point.x - centerX;
+    let y = point.y - centerY;
+    
+    // Apply rotation
+    switch (fieldRotation) {
+      case 90:
+        [x, y] = [-y, x];
+        break;
+      case 180:
+        [x, y] = [-x, -y];
+        break;
+      case 270:
+        [x, y] = [y, -x];
+        break;
+    }
+    
+    // Translate back
+    return {
+      x: x + centerX,
+      y: y + centerY
+    };
+  }
 
   let lineGroup = new Two.Group();
   lineGroup.id = "line-group";
@@ -69,8 +98,8 @@
   $: points = (() => {
     let _points = [];
     let startPointElem = new Two.Circle(
-      x(startPoint.x),
-      y(startPoint.y),
+      x(transformCoordinates(startPoint).x),
+      y(transformCoordinates(startPoint).y),
       x(pointRadius)
     );
     startPointElem.id = `point-0-0`;
@@ -81,13 +110,14 @@
 
     lines.forEach((line, idx) => {
       [line.endPoint, ...line.controlPoints].forEach((point, idx1) => {
+        const transformedPoint = transformCoordinates(point);
         if (idx1 > 0) {
           let pointGroup = new Two.Group();
           pointGroup.id = `point-${idx + 1}-${idx1}`;
 
           let pointElem = new Two.Circle(
-            x(point.x),
-            y(point.y),
+            x(transformedPoint.x),
+            y(transformedPoint.y),
             x(pointRadius)
           );
           pointElem.id = `point-${idx + 1}-${idx1}-background`;
@@ -96,8 +126,8 @@
 
           let pointText = new Two.Text(
             `${idx1}`,
-            x(point.x),
-            y(point.y - 0.15),
+            x(transformedPoint.x),
+            y(transformedPoint.y - 0.15),
             x(pointRadius)
           );
           pointText.id = `point-${idx + 1}-${idx1}-text`;
@@ -113,8 +143,8 @@
           _points.push(pointGroup);
         } else {
           let pointElem = new Two.Circle(
-            x(point.x),
-            y(point.y),
+            x(transformedPoint.x),
+            y(transformedPoint.y),
             x(pointRadius)
           );
           pointElem.id = `point-${idx + 1}-${idx1}`;
@@ -133,48 +163,53 @@
 
     lines.forEach((line, idx) => {
       let _startPoint = idx === 0 ? startPoint : lines[idx - 1].endPoint;
+      let transformedStartPoint = transformCoordinates(_startPoint);
+      let transformedEndPoint = transformCoordinates(line.endPoint);
+      let transformedControlPoints = line.controlPoints.map(cp => transformCoordinates(cp));
 
       let lineElem: Path | PathLine;
       if (line.controlPoints.length > 2) {
         // Approximate an n-degree bezier curve by sampling it at 100 points
         const samples = 100;
         const cps = [_startPoint, ...line.controlPoints, line.endPoint];
-        let points = [new Two.Anchor(x(_startPoint.x), y(_startPoint.y), 0, 0, 0, 0, Two.Commands.move)];
+        let points = [new Two.Anchor(x(transformedStartPoint.x), y(transformedStartPoint.y), 0, 0, 0, 0, Two.Commands.move)];
         for (let i = 1; i <= samples; ++i) {
           const point = getCurvePoint(i / samples, cps);
-          points.push(new Two.Anchor(x(point.x), y(point.y), 0, 0, 0, 0, Two.Commands.line));
+          const transformedPoint = transformCoordinates(point);
+          points.push(new Two.Anchor(x(transformedPoint.x), y(transformedPoint.y), 0, 0, 0, 0, Two.Commands.line));
         }
         points.forEach((point) => (point.relative = false));
 
         lineElem = new Two.Path(points);
         lineElem.automatic = false;
       } else if (line.controlPoints.length > 0) {
-        let cp1 = line.controlPoints[1]
-          ? line.controlPoints[0]
+        let cp1 = transformedControlPoints[1]
+          ? transformedControlPoints[0]
           : quadraticToCubic(_startPoint, line.controlPoints[0], line.endPoint)
               .Q1;
-        let cp2 =
-          line.controlPoints[1] ??
+        let transformedCp1 = transformCoordinates(cp1);
+        let cp2 = transformedControlPoints[1] ??
           quadraticToCubic(_startPoint, line.controlPoints[0], line.endPoint)
             .Q2;
+        let transformedCp2 = transformCoordinates(cp2);
 
         let points = [
           new Two.Anchor(
-            x(_startPoint.x),
-            y(_startPoint.y),
-            x(_startPoint.x),
-            y(_startPoint.y),
-            x(cp1.x),
-            y(cp1.y),
+            x(transformedStartPoint.x),
+            y(transformedStartPoint.y),
+            x(transformedStartPoint.x),
+            y(transformedStartPoint.y),
+            x(transformedCp1.x),
+            y(transformedCp1.y),
             Two.Commands.move
           ),
           new Two.Anchor(
-            x(line.endPoint.x),
-            y(line.endPoint.y),
-            x(cp2.x),
-            y(cp2.y),
-            x(line.endPoint.x),
-            y(line.endPoint.y),
+            x(transformedEndPoint.x),
+            y(transformedEndPoint.y),
+            x(transformedCp2.x),
+            y(transformedCp2.y),
+            x(transformedEndPoint.x),
+            y(transformedEndPoint.y),
             Two.Commands.curve
           ),
         ];
@@ -184,10 +219,10 @@
         lineElem.automatic = false;
       } else {
         lineElem = new Two.Line(
-          x(_startPoint.x),
-          y(_startPoint.y),
-          x(line.endPoint.x),
-          y(line.endPoint.y)
+          x(transformedStartPoint.x),
+          y(transformedStartPoint.y),
+          x(transformedEndPoint.x),
+          y(transformedEndPoint.y)
         );
       }
 
@@ -213,7 +248,8 @@
     let linePercent = easeInOutQuad(totalLineProgress - Math.floor(totalLineProgress));
     let _startPoint = currentLineIdx === 0 ? startPoint : lines[currentLineIdx - 1].endPoint;
     let robotInchesXY = getCurvePoint(linePercent, [_startPoint, ...currentLine.controlPoints, currentLine.endPoint]);
-    robotXY = { x: x(robotInchesXY.x), y: y(robotInchesXY.y) };
+    let transformedRobotXY = transformCoordinates(robotInchesXY);
+    robotXY = { x: x(transformedRobotXY.x), y: y(transformedRobotXY.y) };
 
     switch (currentLine.endPoint.heading) {
       case "linear":
@@ -231,7 +267,8 @@
           linePercent + (currentLine.endPoint.reverse ? -0.01 : 0.01),
           [_startPoint, ...currentLine.controlPoints, currentLine.endPoint]
         );
-        const nextPoint = { x: x(nextPointInches.x), y: y(nextPointInches.y) };
+        const transformedNextPoint = transformCoordinates(nextPointInches);
+        const nextPoint = { x: x(transformedNextPoint.x), y: y(transformedNextPoint.y) };
 
         const dx = nextPoint.x - robotXY.x;
         const dy = nextPoint.y - robotXY.y;
@@ -265,6 +302,16 @@
 
     two.update();
   })();
+
+  function rotateFieldLeft() {
+    fieldRotation = (fieldRotation - 90 + 360) % 360;
+  }
+
+  function rotateFieldRight() {
+    fieldRotation = (fieldRotation + 90) % 360;
+  }
+
+  $: fieldImageSrc = $darkMode === "light" ? "/fields/decode-light.webp" : "/fields/decode.webp";
 
   let playing = false;
 
@@ -443,76 +490,71 @@
   }
 
   function addNewLine() {
-  lines = [
-    ...lines,
-    {
-      endPoint: {
+    lines = [
+      ...lines,
+      {
+        endPoint: {
+          x: _.random(36, 108),
+          y: _.random(36, 108),
+          heading: "tangential",
+          reverse: false,
+        },
+        controlPoints: [],
+        color: getRandomColor(),
+      },
+    ];
+  }
+
+  function addControlPoint() {
+    if (lines.length > 0) {
+      const lastLine = lines[lines.length - 1];
+      lastLine.controlPoints.push({
         x: _.random(36, 108),
         y: _.random(36, 108),
-        heading: "tangential",
-        reverse: false,
-      },
-      controlPoints: [],
-      color: getRandomColor(),
-    },
-  ];
-}
-
-
-function addControlPoint() {
-  if (lines.length > 0) {
-    const lastLine = lines[lines.length - 1];
-    lastLine.controlPoints.push({
-      x: _.random(36, 108),
-      y: _.random(36, 108),
-    });
-  }
-}
-
-function removeControlPoint() {
-  if (lines.length > 0) {
-    const lastLine = lines[lines.length - 1];
-    if (lastLine.controlPoints.length > 0) {
-      lastLine.controlPoints.pop();
+      });
     }
   }
-}
 
-hotkeys('w', function(event, handler){
-  event.preventDefault();
-  addNewLine();
-});
+  function removeControlPoint() {
+    if (lines.length > 0) {
+      const lastLine = lines[lines.length - 1];
+      if (lastLine.controlPoints.length > 0) {
+        lastLine.controlPoints.pop();
+      }
+    }
+  }
 
+  hotkeys('w', function(event, handler){
+    event.preventDefault();
+    addNewLine();
+  });
 
-hotkeys('a', function(event, handler){
-  event.preventDefault();
-  addControlPoint();
-  $: points;
-  $: path;
-  two.update();
-});
+  hotkeys('a', function(event, handler){
+    event.preventDefault();
+    addControlPoint();
+    points = points;
+    path = path;
+    if (two) two.update();
+  });
 
-hotkeys('s', function(event, handler){
-  event.preventDefault();
-  removeControlPoint();
-  $: points;
-  $: path;
-  two.update();
-});
-
+  hotkeys('s', function(event, handler){
+    event.preventDefault();
+    removeControlPoint();
+  });
 </script>
 
-<Navbar bind:lines bind:startPoint {saveFile} {loadFile} {loadRobot}/>
+<Navbar bind:lines bind:startPoint {saveFile} {loadFile} {loadRobot} {rotateFieldLeft} {rotateFieldRight}/>
 <div
-  class="w-screen h-screen pt-20 p-2 flex flex-row justify-center items-center gap-2"
+  class="w-screen h-screen pt-20 p-2 flex flex-row justify-center items-center gap-4"
 >
-  <div class="flex h-full justify-center items-center">
+  <div class="flex h-full justify-center items-center flex-1">
     <div
       bind:this={twoElement}
       class="h-full aspect-square rounded-lg shadow-md bg-neutral-50 dark:bg-neutral-900 relative overflow-clip"
+      style="transform: rotate({fieldRotation}deg);"
     >
       <img
-        src="/fields/decode.webp"
+        src={fieldImageSrc}
         alt="Field"
         class="absolute top-0 left-0 w-full h-full rounded-lg z-10 pointer-events-none"
       />
@@ -525,6 +567,7 @@ hotkeys('s', function(event, handler){
       />
     </div>
   </div>
+  
   <ControlTab
     bind:playing
     {play}
@@ -538,5 +581,6 @@ hotkeys('s', function(event, handler){
     bind:robotHeading
     {x}
     {y}
+    class="flex-shrink-0"
   />
 </div>
