@@ -14,6 +14,8 @@
   export let saveFile: () => any;
   export let loadFile: (evt: any) => any;
   export let loadRobot: (evt: any) => any;
+  export let rotateFieldLeft: () => void;
+  export let rotateFieldRight: () => void;
 
   let separateLines = false;
   export let startPoint: Point;
@@ -165,6 +167,48 @@ ${line.endPoint.reverse ? ".setReversed(true)" : ""}
     </a>
   </div>
   <div class="flex flex-row justify-end items-end gap-3">
+    <!-- Field Rotation Controls -->
+    <button 
+      title="Rotate field left 90°" 
+      on:click={rotateFieldLeft}
+      class="p-1 hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded transition-colors"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="2"
+        stroke="currentColor"
+        class="size-6"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m-4.991 0v4.994"
+        />
+      </svg>
+    </button>
+    <button 
+      title="Rotate field right 90°" 
+      on:click={rotateFieldRight}
+      class="p-1 hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded transition-colors"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="2"
+        stroke="currentColor"
+        class="size-6 transform scale-x-[-1]"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m-4.991 0v4.994"
+        />
+      </svg>
+    </button>
+    
     <button title="Save trajectory as a .p2p file" on:click={() => saveFile()}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
