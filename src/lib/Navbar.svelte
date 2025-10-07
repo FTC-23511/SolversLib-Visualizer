@@ -40,99 +40,32 @@
   let exportedCode = "";
 
   async function exportToCode() {
-    const headingTypeToFunctionName = {
-      constant: "setConstantHeadingInterpolation",
-      linear: "setLinearHeadingInterpolation",
-      tangential: "setTangentHeadingInterpolation",
-    };
+    let file = `
+public ArrayList<Pose2d> pathPoses;
 
-    let file = ``;
+public void generatePath() {
+    pathPoses = new ArrayList<>();
+    pathPoses.add(new Pose2d(${startPoint.x}, ${startPoint.y}, ${startPoint.startDeg ?? 0})); // Starting Pose
+${lines.map((line, idx) =>
+            `    pathPoses.add(new Pose2d(${line.endPoint.x}, ${line.endPoint.y}, ${line.endPoint.endDeg ?? 0})); // Line ${idx + 1}`
+    ).join('\n')}
+}
 
-    if(separateLines) {
-      file = `
-    public class GeneratedPaths {
+// At the start of initialize()
+generatePath();
 
-    public static PathBuilder builder = new PathBuilder();
+// Also within initialize()
+robot.drive.setPose(pathPoses.get(0));
+schedule(
+    new SequentialCommandGroup(
+${lines.map((line, idx) =>
+            `        new DriveTo(pathPoses.get(${idx + 1}))`
+    ).join(',\n')}
+    )
+);
+`;
 
-${lines
-              .map(
-                      (line, idx) => `public static PathChain line${idx + 1} = builder
-.addPath(
-  ${line.controlPoints.length === 0 ? `new BezierLine` : `new BezierCurve`}(
-    ${
-                              idx === 0
-                                      ? `new Pose(${startPoint.x.toFixed(3)}, ${startPoint.y.toFixed(3)}),`
-                                      : `new Pose(${lines[idx - 1].endPoint.x.toFixed(3)}, ${lines[idx - 1].endPoint.y.toFixed(3)}),`
-                      }
-    ${
-                              line.controlPoints.length > 0
-                                      ? `${line.controlPoints
-                                              .map(
-                                                      (point) =>
-                                                              `new Pose(${point.x.toFixed(3)}, ${point.y.toFixed(3)})`
-                                              )
-                                              .join(",\n")},`
-                                      : ""
-                      }
-    new Pose(${line.endPoint.x.toFixed(3)}, ${line.endPoint.y.toFixed(3)})
-  )
-).${headingTypeToFunctionName[line.endPoint.heading]}(${line.endPoint.heading === "constant" ? `Math.toRadians(${line.endPoint.degrees})` : line.endPoint.heading === "linear" ? `Math.toRadians(${line.endPoint.startDeg}), Math.toRadians(${line.endPoint.endDeg})` : ""})
-${line.endPoint.reverse ? ".setReversed(true)" : ""}
-.build();`
-              )
-              .join("\n\n")};
-
-    }
-    `;
-    } else {
-      file = `
-    public class GeneratedPath {
-
-      public static PathBuilder builder = new PathBuilder();
-
-        public static PathChain paths = builder${lines
-              .map(
-                      (line, idx) => `.addPath(  // Line ${idx + 1}
-              ${line.controlPoints.length === 0 ? `new BezierLine` : `new BezierCurve`}(
-                ${
-                              idx === 0
-                                      ? `new Pose(${startPoint.x.toFixed(3)}, ${startPoint.y.toFixed(3)}),`
-                                      : `new Pose(${lines[idx - 1].endPoint.x.toFixed(3)}, ${lines[idx - 1].endPoint.y.toFixed(3)}),`
-                      }
-                ${
-                              line.controlPoints.length > 0
-                                      ? `${line.controlPoints
-                                              .map(
-                                                      (point) =>
-                                                              `new Pose(${point.x.toFixed(3)}, ${point.y.toFixed(3)})`
-                                              )
-                                              .join(",\n")},`
-                                      : ""
-                      }
-                new Pose(${line.endPoint.x.toFixed(3)}, ${line.endPoint.y.toFixed(3)})
-              )
-            ).${headingTypeToFunctionName[line.endPoint.heading]}(${line.endPoint.heading === "constant" ? `Math.toRadians(${line.endPoint.degrees})` : line.endPoint.heading === "linear" ? `Math.toRadians(${line.endPoint.startDeg}), Math.toRadians(${line.endPoint.endDeg})` : ""})
-            ${line.endPoint.reverse ? ".setReversed(true)" : ""}
-          .build();`
-              )
-              .join("\n")};
-
-    }
-    `;
-    }
-
-    await prettier
-      .format(file, {
-        parser: "java",
-        plugins: [prettierJavaPlugin],
-      })
-      .then((res) => {
-        exportedCode = res;
-      })
-      .catch((e) => {
-        console.error(e);
-      });
-
+    exportedCode = (file);
     dialogOpen = true;
   }
 </script>
@@ -372,14 +305,14 @@ ${line.endPoint.reverse ? ".setReversed(true)" : ""}
           Here is the generated code for this path:
         </p>
         <div class="flex items-center gap-2">
-          <label for="separate-lines" class="text-sm font-light text-neutral-700 dark:text-neutral-400">Separate Lines</label>
-          <input
-                  id="separate-lines"
-                  type="checkbox"
-                  bind:checked={separateLines}
-                  on:change={exportToCode}
-                  class="cursor-pointer"
-          />
+<!--          <label for="separate-lines" class="text-sm font-light text-neutral-700 dark:text-neutral-400">Separate Lines</label>-->
+<!--          <input-->
+<!--                  id="separate-lines"-->
+<!--                  type="checkbox"-->
+<!--                  bind:checked={separateLines}-->
+<!--                  on:change={exportToCode}-->
+<!--                  class="cursor-pointer"-->
+<!--          />-->
           <button
                   class=""
                   on:click={() => {
