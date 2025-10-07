@@ -1,4 +1,16 @@
 # SolversLib Visualizer
+The SolversLib Visualizer is a modified version of the Pedro Pathing's [visualizer](https://visualizer.pedropathing.com),
+and all credit goes to them and #16166 Watt'S Up for the original visualizer.
+
+This project is underneath the Apache License, like the Pedro Pathing visualizer.
+
+### Changelog:
+- Removed support for splines/curves, as the SolversLib Visualizer is designed for Point-to-Point
+- Added functionality to add lines in-between preexisting lines without having to delete those lines
+- Replaced `.pp` files with `.p2p` files on export/import, which only supports lines
+  - Note that if you import at `.pp` file, it will try to turn it into a single line per control point
+- Added full support for light mode, including a light mode field (credit to 16236 Juice for all fields)
+- 
 
 <table>
 <tr>
