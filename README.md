@@ -10,6 +10,8 @@ This project is underneath the Apache License, like the Pedro Pathing visualizer
 - Replaced `.pp` files with `.p2p` files on export/import, which only supports lines
   - Note that if you import at `.pp` file, it will try to turn it into a single line per control point
 - Added full support for light mode, including a light mode field (credit to 16236 Juice for all fields)
+- Added function i rotate the fields left and right by 90°
+- Added a switch to toggle between light mode and dark mode
 
   
 <table>
