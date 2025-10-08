@@ -12,7 +12,15 @@ This project is underneath the Apache License, like the Pedro Pathing visualizer
 - Added full support for light mode, including a light mode field (credit to 16236 Juice for all fields)
 - Added function i rotate the fields left and right by 90°
 - Added a switch to toggle between light mode and dark mode
-
+  
+## Comprehensive Codebase includes:
+- Core Robot Framework: A command-based robot architecture using SolversLib
+- Drive Systems: Swerve drive implementation with coaxial modules
+- Hardware Abstractions: Extended motor, servo, and sensor wrappers
+- Control Systems: PID controllers, feedforward, and trajectory following
+- Geometry & Kinematics: 2D pose tracking, odometry, and motion planning
+- Pure Pursuit: Path following algorithms
+- Command System: Subsystem-based command scheduling
   
 <table>
 <tr>
