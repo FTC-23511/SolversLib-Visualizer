@@ -305,10 +305,12 @@
 
   function rotateFieldLeft() {
     fieldRotation = (fieldRotation - 90 + 360) % 360;
+  //rotate the field left
   }
 
   function rotateFieldRight() {
     fieldRotation = (fieldRotation + 90) % 360;
+  //rotate the field right
   }
 
   $: fieldImageSrc = $darkMode === "light" ? "/fields/decode-light.webp" : "/fields/decode.webp";
