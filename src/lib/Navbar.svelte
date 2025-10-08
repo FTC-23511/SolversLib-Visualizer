@@ -14,8 +14,8 @@
   export let saveFile: () => any;
   export let loadFile: (evt: any) => any;
   export let loadRobot: (evt: any) => any;
-  export let rotateFieldLeft: () => void;
-  export let rotateFieldRight: () => void;
+  export let rotateFieldLeft: () => void;   //rotateleft
+  export let rotateFieldRight: () => void;  //rotateright
 
   let separateLines = false;
   export let startPoint: Point;
@@ -102,6 +102,7 @@ ${lines.map((line, idx) =>
   <div class="flex flex-row justify-end items-end gap-3">
     <!-- Field Rotation Controls -->
     <button 
+//rotate button
       title="Rotate field left 90°" 
       on:click={rotateFieldLeft}
       class="p-1 hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded transition-colors"
@@ -122,6 +123,7 @@ ${lines.map((line, idx) =>
       </svg>
     </button>
     <button 
+//rotate button
       title="Rotate field right 90°" 
       on:click={rotateFieldRight}
       class="p-1 hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded transition-colors"
