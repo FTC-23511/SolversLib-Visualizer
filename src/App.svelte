@@ -247,40 +247,45 @@
 
     let linePercent = easeInOutQuad(totalLineProgress - Math.floor(totalLineProgress));
     let _startPoint = currentLineIdx === 0 ? startPoint : lines[currentLineIdx - 1].endPoint;
+    
+    // Calculate robot position using original coordinates (unrotated)
     let robotInchesXY = getCurvePoint(linePercent, [_startPoint, ...currentLine.controlPoints, currentLine.endPoint]);
+    
+    // Apply field rotation to get visual position
     let transformedRobotXY = transformCoordinates(robotInchesXY);
     robotXY = { x: x(transformedRobotXY.x), y: y(transformedRobotXY.y) };
 
+    // Calculate robot heading based on original path (unrotated)
+    let robotHeadingUnrotated = 0;
     switch (currentLine.endPoint.heading) {
       case "linear":
-        robotHeading = -shortestRotation(
+        robotHeadingUnrotated = -shortestRotation(
           currentLine.endPoint.startDeg,
           currentLine.endPoint.endDeg,
           linePercent
         );
         break;
       case "constant":
-        robotHeading = -currentLine.endPoint.degrees;
+        robotHeadingUnrotated = -currentLine.endPoint.degrees;
         break;
       case "tangential":
         const nextPointInches = getCurvePoint(
           linePercent + (currentLine.endPoint.reverse ? -0.01 : 0.01),
           [_startPoint, ...currentLine.controlPoints, currentLine.endPoint]
         );
-        const transformedNextPoint = transformCoordinates(nextPointInches);
-        const nextPoint = { x: x(transformedNextPoint.x), y: y(transformedNextPoint.y) };
 
-        const dx = nextPoint.x - robotXY.x;
-        const dy = nextPoint.y - robotXY.y;
+        const dx = nextPointInches.x - robotInchesXY.x;
+        const dy = nextPointInches.y - robotInchesXY.y;
 
         if (dx !== 0 || dy !== 0) {
           const angle = Math.atan2(dy, dx);
-
-          robotHeading = radiansToDegrees(angle);
+          robotHeadingUnrotated = radiansToDegrees(angle);
         }
-
         break;
     }
+    
+    // Apply field rotation to robot heading
+    robotHeading = robotHeadingUnrotated + fieldRotation;
   }
 
   $: (() => {
@@ -533,15 +538,29 @@
 
   hotkeys('a', function(event, handler){
     event.preventDefault();
-    addControlPoint();
-    points = points;
-    path = path;
-    if (two) two.update();
+    // Move robot left (decrease x coordinate)
+    if (lines.length > 0) {
+      const lastLine = lines[lines.length - 1];
+      lastLine.endPoint.x = Math.max(0, lastLine.endPoint.x - 1);
+    }
   });
 
   hotkeys('s', function(event, handler){
     event.preventDefault();
-    removeControlPoint();
+    // Move robot down (decrease y coordinate)
+    if (lines.length > 0) {
+      const lastLine = lines[lines.length - 1];
+      lastLine.endPoint.y = Math.max(0, lastLine.endPoint.y - 1);
+    }
+  });
+
+  hotkeys('d', function(event, handler){
+    event.preventDefault();
+    // Move robot right (increase x coordinate)
+    if (lines.length > 0) {
+      const lastLine = lines[lines.length - 1];
+      lastLine.endPoint.x = Math.min(144, lastLine.endPoint.x + 1);
+    }
   });
 </script>
 
