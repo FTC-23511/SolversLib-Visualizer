@@ -533,7 +533,6 @@
 
   hotkeys('a', function(event, handler){
     event.preventDefault();
-    addControlPoint();
     points = points;
     path = path;
     if (two) two.update();
