@@ -526,6 +526,12 @@
     }
   }
 
+   function removeLastLine() {
+     if (lines.length > 0) {
+       lines = lines.slice(0, -1);
+     }
+   }
+
   hotkeys('w', function(event, handler){
     event.preventDefault();
     addNewLine();
@@ -543,6 +549,11 @@
     removeControlPoint();
   });
 </script>
+
+  hotkeys('ctrl+z', function(event, handler){
+    event.preventDefault();
+    removeLastLine();
+  });
 
 <Navbar bind:lines bind:startPoint {saveFile} {loadFile} {loadRobot} {rotateFieldLeft} {rotateFieldRight}/>
 <div
