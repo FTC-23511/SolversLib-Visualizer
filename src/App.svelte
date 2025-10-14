@@ -537,23 +537,14 @@
     addNewLine();
   });
 
-  hotkeys('a', function(event, handler){
-    event.preventDefault();
-    points = points;
-    path = path;
-    if (two) two.update();
-  });
-
-  hotkeys('s', function(event, handler){
-    event.preventDefault();
-    removeControlPoint();
-  });
-</script>
-
   hotkeys('ctrl+z', function(event, handler){
     event.preventDefault();
     removeLastLine();
   });
+
+</script>
+
+
 
 <Navbar bind:lines bind:startPoint {saveFile} {loadFile} {loadRobot} {rotateFieldLeft} {rotateFieldRight}/>
 <div
