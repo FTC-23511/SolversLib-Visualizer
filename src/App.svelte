@@ -80,20 +80,71 @@
   let pointGroup = new Two.Group();
   pointGroup.id = "point-group";
 
+  // === MODIFIED: Auto starting path for Blue Alliance - straight lines with connected headings ===
   let startPoint: Point = {
-    x: 56,
-    y: 8,
-    heading: "linear",
-    startDeg: 90,
-    endDeg: 180
+    x: 16,
+    y: 16,
+    heading: "constant",
+    startDeg: 0,
+    endDeg: 0  // Starting heading
   };
+
   let lines: Line[] = [
     {
-      endPoint: { x: 56, y: 36, heading: "linear", startDeg: 90, endDeg: 180 },
+      endPoint: { 
+        x: 16, 
+        y: 48, 
+        heading: "linear", 
+        startDeg: 0,   // Connects from startPoint's endDeg (0)
+        endDeg: 90     // New target heading
+      },
+      controlPoints: [],
+      color: getRandomColor(),
+    },
+    {
+      endPoint: { 
+        x: 48, 
+        y: 48, 
+        heading: "linear", 
+        startDeg: 90,  // Connects from previous line's endDeg (90)
+        endDeg: 180    // New target heading
+      },
+      controlPoints: [],
+      color: getRandomColor(),
+    },
+    {
+      endPoint: { 
+        x: 48, 
+        y: 16, 
+        heading: "linear", 
+        startDeg: 180, // Connects from previous line's endDeg (180)
+        endDeg: 270    // New target heading
+      },
       controlPoints: [],
       color: getRandomColor(),
     },
   ];
+
+  // === ADDED: Simple mirror function for Red Alliance ===
+  function mirrorPaths() {
+    const centerX = 72; // Center of field
+    
+    // Mirror start point
+    startPoint.x = centerX * 2 - startPoint.x;
+    
+    // Mirror all lines
+    lines = lines.map(line => ({
+      ...line,
+      endPoint: {
+        ...line.endPoint,
+        x: centerX * 2 - line.endPoint.x
+      },
+      controlPoints: line.controlPoints.map(cp => ({
+        ...cp,
+        x: centerX * 2 - cp.x
+      }))
+    }));
+  }
 
   $: points = (() => {
     let _points = [];
@@ -305,12 +356,10 @@
 
   function rotateFieldLeft() {
     fieldRotation = (fieldRotation - 90 + 360) % 360;
-  //rotate the field left
   }
 
   function rotateFieldRight() {
     fieldRotation = (fieldRotation + 90) % 360;
-  //rotate the field right
   }
 
   $: fieldImageSrc = $darkMode === "light" ? "/fields/decode-light.webp" : "/fields/decode.webp";
@@ -492,14 +541,20 @@
   }
 
   function addNewLine() {
+    // === MODIFIED: New lines automatically connect headings ===
+    const lastEndDeg = lines.length > 0 ? 
+      (lines[lines.length - 1].endPoint.endDeg || 0) : 
+      (startPoint.endDeg || 0);
+    
     lines = [
       ...lines,
       {
         endPoint: {
           x: _.random(36, 108),
           y: _.random(36, 108),
-          heading: "tangential",
-          reverse: false,
+          heading: "linear",
+          startDeg: lastEndDeg,  // Connect from previous heading
+          endDeg: lastEndDeg,    // Same heading by default
         },
         controlPoints: [],
         color: getRandomColor(),
@@ -546,7 +601,16 @@
 
 
 
-<Navbar bind:lines bind:startPoint {saveFile} {loadFile} {loadRobot} {rotateFieldLeft} {rotateFieldRight}/>
+<Navbar 
+  bind:lines 
+  bind:startPoint 
+  {saveFile} 
+  {loadFile} 
+  {loadRobot} 
+  {rotateFieldLeft} 
+  {rotateFieldRight}
+  {mirrorPaths}
+/>
 <div
   class="w-screen h-screen pt-20 p-2 flex flex-row justify-center items-center gap-4"
 >
@@ -584,6 +648,7 @@
     bind:robotHeading
     {x}
     {y}
+    {mirrorPaths}
     class="flex-shrink-0"
   />
 </div>
