@@ -35,21 +35,21 @@
    */
   $: x = d3
     .scaleLinear()
-    .domain([-72, 72])
-    .range([-72, twoElement?.clientWidth ?? 72]);
+      .domain([0, 144])
+      .range([twoElement?.clientHeight ?? 144, 0]);
 
   /**
    * Converter for Y axis from inches to pixels.
    */
   $: y = d3
     .scaleLinear()
-    .domain([-72, 72])
-    .range([twoElement?.clientHeight ?? 72, -72]);
+      .domain([0, 144])
+      .range([twoElement?.clientHeight ?? 144, 0]);
 
   // Transform coordinates based on field rotation
   function transformCoordinates(point: BasePoint): BasePoint {
-    const centerX = 0;
-    const centerY = 0;
+    const centerX = 72;
+    const centerY = 72;
     
     // Translate to origin
     let x = point.x - centerX;
