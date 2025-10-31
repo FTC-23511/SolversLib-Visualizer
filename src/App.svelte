@@ -35,21 +35,21 @@
    */
   $: x = d3
     .scaleLinear()
-    .domain([0, 144])
-    .range([0, twoElement?.clientWidth ?? 144]);
+    .domain([-72, 72])
+    .range([-72, twoElement?.clientWidth ?? 72]);
 
   /**
    * Converter for Y axis from inches to pixels.
    */
   $: y = d3
     .scaleLinear()
-    .domain([0, 144])
-    .range([twoElement?.clientHeight ?? 144, 0]);
+    .domain([-72, 72])
+    .range([twoElement?.clientHeight ?? 72, -72]);
 
   // Transform coordinates based on field rotation
   function transformCoordinates(point: BasePoint): BasePoint {
-    const centerX = 72;
-    const centerY = 72;
+    const centerX = 0;
+    const centerY = 0;
     
     // Translate to origin
     let x = point.x - centerX;
@@ -303,13 +303,13 @@
     two.update();
   })();
 
-  function rotateFieldLeft() {
-    fieldRotation = (fieldRotation - 90 + 360) % 360;
-  }
-
-  function rotateFieldRight() {
-    fieldRotation = (fieldRotation + 90) % 360;
-  }
+  // function rotateFieldLeft() {
+  //   fieldRotation = (fieldRotation - 90 + 360) % 360;
+  // }
+  //
+  // function rotateFieldRight() {
+  //   fieldRotation = (fieldRotation + 90) % 360;
+  // }
 
   $: fieldImageSrc = $darkMode === "light" ? "/fields/decode-light.webp" : "/fields/decode.webp";
 
@@ -543,7 +543,7 @@
   });
 </script>
 
-<Navbar bind:lines bind:startPoint {saveFile} {loadFile} {loadRobot} {rotateFieldLeft} {rotateFieldRight}/>
+<Navbar bind:lines bind:startPoint {saveFile} {loadFile} {loadRobot} />
 <div
   class="w-screen h-screen pt-20 p-2 flex flex-row justify-center items-center gap-4"
 >
@@ -581,6 +581,5 @@
     bind:robotHeading
     {x}
     {y}
-    class="flex-shrink-0"
   />
 </div>
