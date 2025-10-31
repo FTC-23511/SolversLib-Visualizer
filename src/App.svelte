@@ -34,27 +34,35 @@
    * Converter for X axis from inches to pixels.
    */
   $: x = d3
-    .scaleLinear()
-      .domain([0, 144])
-      .range([twoElement?.clientHeight ?? 144, 0]);
+          .scaleLinear()
+          .domain([-72, 72])
+          .range([-(twoElement?.clientWidth ?? 144) / 2, (twoElement?.clientWidth ?? 144) / 2]);
 
   /**
    * Converter for Y axis from inches to pixels.
    */
   $: y = d3
-    .scaleLinear()
-      .domain([0, 144])
-      .range([twoElement?.clientHeight ?? 144, 0]);
+          .scaleLinear()
+          .domain([-72, 72])
+          .range([(twoElement?.clientHeight ?? 144) / 2, -(twoElement?.clientHeight ?? 144) / 2]);
+
+  /**
+   * Converter for lengths from inches to pixels.
+   */
+  $: scale = d3
+          .scaleLinear()
+          .domain([0, 144])
+          .range([0, twoElement?.clientWidth ?? 144]);
 
   // Transform coordinates based on field rotation
   function transformCoordinates(point: BasePoint): BasePoint {
-    const centerX = 72;
-    const centerY = 72;
-    
+    const centerX = 0;
+    const centerY = 0;
+
     // Translate to origin
     let x = point.x - centerX;
     let y = point.y - centerY;
-    
+
     // Apply rotation
     switch (fieldRotation) {
       case 90:
@@ -67,7 +75,7 @@
         [x, y] = [y, -x];
         break;
     }
-    
+
     // Translate back
     return {
       x: x + centerX,
@@ -81,15 +89,15 @@
   pointGroup.id = "point-group";
 
   let startPoint: Point = {
-    x: 56,
-    y: 8,
+    x: 0,
+    y: -64,
     heading: "linear",
     startDeg: 90,
     endDeg: 180
   };
   let lines: Line[] = [
     {
-      endPoint: { x: 56, y: 36, heading: "linear", startDeg: 90, endDeg: 180 },
+      endPoint: { x: 0, y: 0, heading: "linear", startDeg: 90, endDeg: 180 },
       controlPoints: [],
       color: getRandomColor(),
     },
@@ -98,9 +106,9 @@
   $: points = (() => {
     let _points = [];
     let startPointElem = new Two.Circle(
-      x(transformCoordinates(startPoint).x),
-      y(transformCoordinates(startPoint).y),
-      x(pointRadius)
+            x(transformCoordinates(startPoint).x) + (twoElement?.clientWidth ?? 0) / 2,
+            y(transformCoordinates(startPoint).y) + (twoElement?.clientHeight ?? 0) / 2,
+            scale(pointRadius)
     );
     startPointElem.id = `point-0-0`;
     startPointElem.fill = lines[0].color;
@@ -111,27 +119,29 @@
     lines.forEach((line, idx) => {
       [line.endPoint, ...line.controlPoints].forEach((point, idx1) => {
         const transformedPoint = transformCoordinates(point);
+        const pixelX = x(transformedPoint.x) + (twoElement?.clientWidth ?? 0) / 2;
+        const pixelY = y(transformedPoint.y) + (twoElement?.clientHeight ?? 0) / 2;
         if (idx1 > 0) {
           let pointGroup = new Two.Group();
           pointGroup.id = `point-${idx + 1}-${idx1}`;
 
           let pointElem = new Two.Circle(
-            x(transformedPoint.x),
-            y(transformedPoint.y),
-            x(pointRadius)
+                  pixelX,
+                  pixelY,
+                  scale(pointRadius)
           );
           pointElem.id = `point-${idx + 1}-${idx1}-background`;
           pointElem.fill = line.color;
           pointElem.noStroke();
 
           let pointText = new Two.Text(
-            `${idx1}`,
-            x(transformedPoint.x),
-            y(transformedPoint.y - 0.15),
-            x(pointRadius)
+                  `${idx1}`,
+                  pixelX,
+                  pixelY - 0.15,
+                  scale(pointRadius)
           );
           pointText.id = `point-${idx + 1}-${idx1}-text`;
-          pointText.size = x(1.55);
+          pointText.size = scale(1.55);
           pointText.leading = 1;
           pointText.family = "ui-sans-serif, system-ui, sans-serif";
           pointText.alignment = "center";
@@ -143,9 +153,9 @@
           _points.push(pointGroup);
         } else {
           let pointElem = new Two.Circle(
-            x(transformedPoint.x),
-            y(transformedPoint.y),
-            x(pointRadius)
+                  pixelX,
+                  pixelY,
+                  scale(pointRadius)
           );
           pointElem.id = `point-${idx + 1}-${idx1}`;
           pointElem.fill = line.color;
@@ -167,16 +177,21 @@
       let transformedEndPoint = transformCoordinates(line.endPoint);
       let transformedControlPoints = line.controlPoints.map(cp => transformCoordinates(cp));
 
+      const startPixelX = x(transformedStartPoint.x) + (twoElement?.clientWidth ?? 0) / 2;
+      const startPixelY = y(transformedStartPoint.y) + (twoElement?.clientHeight ?? 0) / 2;
+      const endPixelX = x(transformedEndPoint.x) + (twoElement?.clientWidth ?? 0) / 2;
+      const endPixelY = y(transformedEndPoint.y) + (twoElement?.clientHeight ?? 0) / 2;
+
       let lineElem: Path | PathLine;
       if (line.controlPoints.length > 2) {
         // Approximate an n-degree bezier curve by sampling it at 100 points
         const samples = 100;
         const cps = [_startPoint, ...line.controlPoints, line.endPoint];
-        let points = [new Two.Anchor(x(transformedStartPoint.x), y(transformedStartPoint.y), 0, 0, 0, 0, Two.Commands.move)];
+        let points = [new Two.Anchor(startPixelX, startPixelY, 0, 0, 0, 0, Two.Commands.move)];
         for (let i = 1; i <= samples; ++i) {
           const point = getCurvePoint(i / samples, cps);
           const transformedPoint = transformCoordinates(point);
-          points.push(new Two.Anchor(x(transformedPoint.x), y(transformedPoint.y), 0, 0, 0, 0, Two.Commands.line));
+          points.push(new Two.Anchor(x(transformedPoint.x) + (twoElement?.clientWidth ?? 0) / 2, y(transformedPoint.y) + (twoElement?.clientHeight ?? 0) / 2, 0, 0, 0, 0, Two.Commands.line));
         }
         points.forEach((point) => (point.relative = false));
 
@@ -184,33 +199,38 @@
         lineElem.automatic = false;
       } else if (line.controlPoints.length > 0) {
         let cp1 = transformedControlPoints[1]
-          ? transformedControlPoints[0]
-          : quadraticToCubic(_startPoint, line.controlPoints[0], line.endPoint)
-              .Q1;
+                ? transformedControlPoints[0]
+                : quadraticToCubic(_startPoint, line.controlPoints[0], line.endPoint)
+                        .Q1;
         let transformedCp1 = transformCoordinates(cp1);
         let cp2 = transformedControlPoints[1] ??
-          quadraticToCubic(_startPoint, line.controlPoints[0], line.endPoint)
-            .Q2;
+                quadraticToCubic(_startPoint, line.controlPoints[0], line.endPoint)
+                        .Q2;
         let transformedCp2 = transformCoordinates(cp2);
+
+        const cp1PixelX = x(transformedCp1.x) + (twoElement?.clientWidth ?? 0) / 2;
+        const cp1PixelY = y(transformedCp1.y) + (twoElement?.clientHeight ?? 0) / 2;
+        const cp2PixelX = x(transformedCp2.x) + (twoElement?.clientWidth ?? 0) / 2;
+        const cp2PixelY = y(transformedCp2.y) + (twoElement?.clientHeight ?? 0) / 2;
 
         let points = [
           new Two.Anchor(
-            x(transformedStartPoint.x),
-            y(transformedStartPoint.y),
-            x(transformedStartPoint.x),
-            y(transformedStartPoint.y),
-            x(transformedCp1.x),
-            y(transformedCp1.y),
-            Two.Commands.move
+                  startPixelX,
+                  startPixelY,
+                  startPixelX,
+                  startPixelY,
+                  cp1PixelX,
+                  cp1PixelY,
+                  Two.Commands.move
           ),
           new Two.Anchor(
-            x(transformedEndPoint.x),
-            y(transformedEndPoint.y),
-            x(transformedCp2.x),
-            y(transformedCp2.y),
-            x(transformedEndPoint.x),
-            y(transformedEndPoint.y),
-            Two.Commands.curve
+                  endPixelX,
+                  endPixelY,
+                  cp2PixelX,
+                  cp2PixelY,
+                  endPixelX,
+                  endPixelY,
+                  Two.Commands.curve
           ),
         ];
         points.forEach((point) => (point.relative = false));
@@ -219,16 +239,16 @@
         lineElem.automatic = false;
       } else {
         lineElem = new Two.Line(
-          x(transformedStartPoint.x),
-          y(transformedStartPoint.y),
-          x(transformedEndPoint.x),
-          y(transformedEndPoint.y)
+                startPixelX,
+                startPixelY,
+                endPixelX,
+                endPixelY
         );
       }
 
       lineElem.id = `line-${idx + 1}`;
       lineElem.stroke = line.color;
-      lineElem.linewidth = x(lineWidth);
+      lineElem.linewidth = scale(lineWidth);
       lineElem.noFill();
 
       _path.push(lineElem);
@@ -249,14 +269,14 @@
     let _startPoint = currentLineIdx === 0 ? startPoint : lines[currentLineIdx - 1].endPoint;
     let robotInchesXY = getCurvePoint(linePercent, [_startPoint, ...currentLine.controlPoints, currentLine.endPoint]);
     let transformedRobotXY = transformCoordinates(robotInchesXY);
-    robotXY = { x: x(transformedRobotXY.x), y: y(transformedRobotXY.y) };
+    robotXY = { x: x(transformedRobotXY.x) + (twoElement?.clientWidth ?? 0) / 2, y: y(transformedRobotXY.y) + (twoElement?.clientHeight ?? 0) / 2 };
 
     switch (currentLine.endPoint.heading) {
       case "linear":
         robotHeading = -shortestRotation(
-          currentLine.endPoint.startDeg,
-          currentLine.endPoint.endDeg,
-          linePercent
+                currentLine.endPoint.startDeg,
+                currentLine.endPoint.endDeg,
+                linePercent
         );
         break;
       case "constant":
@@ -264,11 +284,11 @@
         break;
       case "tangential":
         const nextPointInches = getCurvePoint(
-          linePercent + (currentLine.endPoint.reverse ? -0.01 : 0.01),
-          [_startPoint, ...currentLine.controlPoints, currentLine.endPoint]
+                linePercent + (currentLine.endPoint.reverse ? -0.01 : 0.01),
+                [_startPoint, ...currentLine.controlPoints, currentLine.endPoint]
         );
         const transformedNextPoint = transformCoordinates(nextPointInches);
-        const nextPoint = { x: x(transformedNextPoint.x), y: y(transformedNextPoint.y) };
+        const nextPoint = { x: x(transformedNextPoint.x) + (twoElement?.clientWidth ?? 0) / 2, y: y(transformedNextPoint.y) + (twoElement?.clientHeight ?? 0) / 2 };
 
         const dx = nextPoint.x - robotXY.x;
         const dy = nextPoint.y - robotXY.y;
@@ -374,16 +394,19 @@
 
         const { x: xPos, y: yPos } = getMousePos(evt, two.renderer.domElement);
 
+        const invertedX = x.invert(xPos - (twoElement?.clientWidth ?? 0) / 2);
+        const invertedY = y.invert(yPos - (twoElement?.clientHeight ?? 0) / 2);
+
         if (line === -1) {
-          startPoint.x = x.invert(xPos);
-          startPoint.y = y.invert(yPos);
+          startPoint.x = invertedX;
+          startPoint.y = invertedY;
         } else {
           if (point === 0) {
-            lines[line].endPoint.x = x.invert(xPos);
-            lines[line].endPoint.y = y.invert(yPos);
+            lines[line].endPoint.x = invertedX;
+            lines[line].endPoint.y = invertedY;
           } else {
-            lines[line].controlPoints[point - 1].x = x.invert(xPos);
-            lines[line].controlPoints[point - 1].y = y.invert(yPos);
+            lines[line].controlPoints[point - 1].x = invertedX;
+            lines[line].controlPoints[point - 1].y = invertedY;
           }
         }
       } else {
@@ -494,8 +517,8 @@
       ...lines,
       {
         endPoint: {
-          x: _.random(36, 108),
-          y: _.random(36, 108),
+          x: _.random(-36, 36),
+          y: _.random(-36, 36),
           heading: "tangential",
           reverse: false,
         },
@@ -509,8 +532,8 @@
     if (lines.length > 0) {
       const lastLine = lines[lines.length - 1];
       lastLine.controlPoints.push({
-        x: _.random(36, 108),
-        y: _.random(36, 108),
+        x: _.random(-36, 36),
+        y: _.random(-36, 36),
       });
     }
   }
@@ -529,13 +552,13 @@
     addNewLine();
   });
 
-  hotkeys('a', function(event, handler){
-    event.preventDefault();
-    addControlPoint();
-    points = points;
-    path = path;
-    if (two) two.update();
-  });
+  // hotkeys('a', function(event, handler){
+  //   event.preventDefault();
+  //   addControlPoint();
+  //   points = points;
+  //   path = path;
+  //   if (two) two.update();
+  // });
 
   hotkeys('s', function(event, handler){
     event.preventDefault();
@@ -545,41 +568,41 @@
 
 <Navbar bind:lines bind:startPoint {saveFile} {loadFile} {loadRobot} />
 <div
-  class="w-screen h-screen pt-20 p-2 flex flex-row justify-center items-center gap-4"
+        class="w-screen h-screen pt-20 p-2 flex flex-row justify-center items-center gap-4"
 >
   <div class="flex h-full justify-center items-center flex-1">
     <div
-      bind:this={twoElement}
-      class="h-full aspect-square rounded-lg shadow-md bg-neutral-50 dark:bg-neutral-900 relative overflow-clip"
-      style="transform: rotate({fieldRotation}deg);"
+            bind:this={twoElement}
+            class="h-full aspect-square rounded-lg shadow-md bg-neutral-50 dark:bg-neutral-900 relative overflow-clip"
+            style="transform: rotate({fieldRotation}deg);"
     >
       <img
-        src={fieldImageSrc}
-        alt="Field"
-        class="absolute top-0 left-0 w-full h-full rounded-lg z-10 pointer-events-none"
+              src={fieldImageSrc}
+              alt="Field"
+              class="absolute top-0 left-0 w-full h-full rounded-lg z-10 pointer-events-none"
       />
       <img
-        src={"/robot.png"}
-        width={x(robotWidth)}
-        height={x(robotHeight)}
-        alt="Robot"
-        style={`position: absolute; top: ${robotXY.y}px; left: ${robotXY.x}px; transform: translate(-50%, -50%) rotate(${robotHeading}deg); z-index: 20; width: ${x(robotWidth)}px; height: ${x(robotHeight)}px;`}
+              src={"/robot.png"}
+              width={scale(robotWidth)}
+              height={scale(robotHeight)}
+              alt="Robot"
+              style={`position: absolute; top: ${robotXY.y}px; left: ${robotXY.x}px; transform: translate(-50%, -50%) rotate(${robotHeading}deg); z-index: 20; width: ${scale(robotWidth)}px; height: ${scale(robotHeight)}px;`}
       />
     </div>
   </div>
-  
+
   <ControlTab
-    bind:playing
-    {play}
-    {pause}
-    bind:startPoint
-    bind:lines
-    bind:robotWidth
-    bind:robotHeight
-    bind:percent
-    bind:robotXY
-    bind:robotHeading
-    {x}
-    {y}
+          bind:playing
+          {play}
+          {pause}
+          bind:startPoint
+          bind:lines
+          bind:robotWidth
+          bind:robotHeight
+          bind:percent
+          bind:robotXY
+          bind:robotHeading
+          {x}
+          {y}
   />
 </div>

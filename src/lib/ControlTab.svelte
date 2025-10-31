@@ -20,8 +20,8 @@
       ...lines,
       {
         endPoint: {
-          x: _.random(36, 108),
-          y: _.random(36, 108),
+          x: _.random(-36, 36),
+          y: _.random(-36, 36),
           heading: "tangential",
           reverse: false,
         },
@@ -34,9 +34,9 @@
   function insertLineAfter(idx: number) {
     const newLine = {
       endPoint: {
-        x: _.random(36, 108),
-        y: _.random(36, 108),
-        heading: "tangential",
+        x: _.random(-36, 36),
+        y: _.random(-36, 36),
+        heading: "tangential" as const, // <-- Fix is here
         reverse: false,
       },
       controlPoints: [],
@@ -55,8 +55,8 @@
 
   function addControlPoint(idx: number) {
     lines[idx].controlPoints.push({
-      x: _.random(36, 108),
-      y: _.random(36, 108),
+      x: _.random(-36, 36),
+      y: _.random(-36, 36),
     });
     lines = lines;
   }
@@ -77,31 +77,31 @@
       <div class="flex gap-2">
         {#if playing}
           <button
-            on:click={pause}
-            class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+                  on:click={pause}
+                  class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
           >
             Pause
           </button>
         {:else}
           <button
-            on:click={play}
-            class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
+                  on:click={play}
+                  class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
           >
             Play
           </button>
         {/if}
       </div>
-      
+
       <!-- Progress Slider -->
       <div class="flex flex-col gap-1">
         <label class="text-sm font-medium">Progress: {percent.toFixed(1)}%</label>
         <input
-          type="range"
-          min="0"
-          max="100"
-          step="0.1"
-          bind:value={percent}
-          class="slider w-full"
+                type="range"
+                min="0"
+                max="100"
+                step="0.1"
+                bind:value={percent}
+                class="slider w-full"
         />
       </div>
     </div>
@@ -113,17 +113,17 @@
         <div>
           <label class="text-sm font-medium">Width</label>
           <input
-            type="number"
-            bind:value={robotWidth}
-            class="w-full px-2 py-1 border rounded dark:bg-neutral-700 dark:border-neutral-600"
+                  type="number"
+                  bind:value={robotWidth}
+                  class="w-full px-2 py-1 border rounded dark:bg-neutral-700 dark:border-neutral-600"
           />
         </div>
         <div>
           <label class="text-sm font-medium">Height</label>
           <input
-            type="number"
-            bind:value={robotHeight}
-            class="w-full px-2 py-1 border rounded dark:bg-neutral-700 dark:border-neutral-600"
+                  type="number"
+                  bind:value={robotHeight}
+                  class="w-full px-2 py-1 border rounded dark:bg-neutral-700 dark:border-neutral-600"
           />
         </div>
       </div>
@@ -141,19 +141,19 @@
         <div>
           <label class="text-sm font-medium">X</label>
           <input
-            type="number"
-            step="0.001"
-            bind:value={startPoint.x}
-            class="w-full px-2 py-1 border rounded dark:bg-neutral-700 dark:border-neutral-600 text-sm"
+                  type="number"
+                  step="0.001"
+                  bind:value={startPoint.x}
+                  class="w-full px-2 py-1 border rounded dark:bg-neutral-700 dark:border-neutral-600 text-sm"
           />
         </div>
         <div>
           <label class="text-sm font-medium">Y</label>
           <input
-            type="number"
-            step="0.001"
-            bind:value={startPoint.y}
-            class="w-full px-2 py-1 border rounded dark:bg-neutral-700 dark:border-neutral-600 text-sm"
+                  type="number"
+                  step="0.001"
+                  bind:value={startPoint.y}
+                  class="w-full px-2 py-1 border rounded dark:bg-neutral-700 dark:border-neutral-600 text-sm"
           />
         </div>
       </div>
@@ -164,8 +164,8 @@
       <div class="flex justify-between items-center">
         <h3 class="font-semibold text-lg">Lines</h3>
         <button
-          on:click={addNewLine}
-          class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-sm"
+                on:click={addNewLine}
+                class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-sm"
         >
           Add Line
         </button>
@@ -176,16 +176,16 @@
           <div class="flex justify-between items-center mb-2">
             <div class="flex items-center gap-2">
               <div
-                class="w-4 h-4 rounded-full"
-                style="background-color: {line.color}"
+                      class="w-4 h-4 rounded-full"
+                      style="background-color: {line.color}"
               ></div>
               <span class="font-medium">Line {idx + 1}</span>
             </div>
             <div class="flex gap-1">
               <button
-                on:click={() => insertLineAfter(idx)}
-                title="Insert Line After This One"
-                class="p-1 text-blue-600 hover:bg-blue-100 dark:hover:bg-blue-900 rounded"
+                      on:click={() => insertLineAfter(idx)}
+                      title="Insert Line After This One"
+                      class="p-1 text-blue-600 hover:bg-blue-100 dark:hover:bg-blue-900 rounded"
               >
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
@@ -193,9 +193,9 @@
               </button>
               {#if lines.length > 1}
                 <button
-                  on:click={() => removeLine(idx)}
-                  title="Remove Line"
-                  class="p-1 text-red-600 hover:bg-red-100 dark:hover:bg-red-900 rounded"
+                        on:click={() => removeLine(idx)}
+                        title="Remove Line"
+                        class="p-1 text-red-600 hover:bg-red-100 dark:hover:bg-red-900 rounded"
                 >
                   <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
@@ -210,18 +210,18 @@
             <label class="text-sm font-medium">End Point</label>
             <div class="grid grid-cols-2 gap-2">
               <input
-                type="number"
-                step="0.001"
-                bind:value={line.endPoint.x}
-                placeholder="X"
-                class="px-2 py-1 border rounded text-sm dark:bg-neutral-700 dark:border-neutral-600 min-w-0"
+                      type="number"
+                      step="0.001"
+                      bind:value={line.endPoint.x}
+                      placeholder="X"
+                      class="px-2 py-1 border rounded text-sm dark:bg-neutral-700 dark:border-neutral-600 min-w-0"
               />
               <input
-                type="number"
-                step="0.001"
-                bind:value={line.endPoint.y}
-                placeholder="Y"
-                class="px-2 py-1 border rounded text-sm dark:bg-neutral-700 dark:border-neutral-600 min-w-0"
+                      type="number"
+                      step="0.001"
+                      bind:value={line.endPoint.y}
+                      placeholder="Y"
+                      class="px-2 py-1 border rounded text-sm dark:bg-neutral-700 dark:border-neutral-600 min-w-0"
               />
             </div>
           </div>
@@ -232,8 +232,8 @@
               <div class="flex justify-between items-center">
                 <label class="text-sm font-medium">Control Points</label>
                 <button
-                  on:click={() => removeControlPoint(idx)}
-                  class="text-xs text-red-600 hover:text-red-800"
+                        on:click={() => removeControlPoint(idx)}
+                        class="text-xs text-red-600 hover:text-red-800"
                 >
                   Remove Last
                 </button>
@@ -241,18 +241,18 @@
               {#each line.controlPoints as cp, cpIdx}
                 <div class="grid grid-cols-2 gap-2 mt-1">
                   <input
-                    type="number"
-                    step="0.001"
-                    bind:value={cp.x}
-                    placeholder="X"
-                    class="px-2 py-1 border rounded text-sm dark:bg-neutral-700 dark:border-neutral-600 min-w-0"
+                          type="number"
+                          step="0.001"
+                          bind:value={cp.x}
+                          placeholder="X"
+                          class="px-2 py-1 border rounded text-sm dark:bg-neutral-700 dark:border-neutral-600 min-w-0"
                   />
                   <input
-                    type="number"
-                    step="0.001"
-                    bind:value={cp.y}
-                    placeholder="Y"
-                    class="px-2 py-1 border rounded text-sm dark:bg-neutral-700 dark:border-neutral-600 min-w-0"
+                          type="number"
+                          step="0.001"
+                          bind:value={cp.y}
+                          placeholder="Y"
+                          class="px-2 py-1 border rounded text-sm dark:bg-neutral-700 dark:border-neutral-600 min-w-0"
                   />
                 </div>
               {/each}
@@ -263,8 +263,8 @@
           <div>
             <label class="text-sm font-medium">Heading</label>
             <select
-              bind:value={line.endPoint.heading}
-              class="w-full px-2 py-1 border rounded text-sm dark:bg-neutral-700 dark:border-neutral-600"
+                    bind:value={line.endPoint.heading}
+                    class="w-full px-2 py-1 border rounded text-sm dark:bg-neutral-700 dark:border-neutral-600"
             >
               <option value="tangential">Tangential</option>
               <option value="linear">Linear</option>
@@ -274,34 +274,34 @@
             {#if line.endPoint.heading === "linear"}
               <div class="grid grid-cols-2 gap-2 mt-1">
                 <input
-                  type="number"
-                  step="0.001"
-                  bind:value={line.endPoint.startDeg}
-                  placeholder="Start Deg"
-                  class="px-2 py-1 border rounded text-sm dark:bg-neutral-700 dark:border-neutral-600 min-w-0"
+                        type="number"
+                        step="0.001"
+                        bind:value={line.endPoint.startDeg}
+                        placeholder="Start Deg"
+                        class="px-2 py-1 border rounded text-sm dark:bg-neutral-700 dark:border-neutral-600 min-w-0"
                 />
                 <input
-                  type="number"
-                  step="0.001"
-                  bind:value={line.endPoint.endDeg}
-                  placeholder="End Deg"
-                  class="px-2 py-1 border rounded text-sm dark:bg-neutral-700 dark:border-neutral-600 min-w-0"
+                        type="number"
+                        step="0.001"
+                        bind:value={line.endPoint.endDeg}
+                        placeholder="End Deg"
+                        class="px-2 py-1 border rounded text-sm dark:bg-neutral-700 dark:border-neutral-600 min-w-0"
                 />
               </div>
             {:else if line.endPoint.heading === "constant"}
               <input
-                type="number"
-                step="0.001"
-                bind:value={line.endPoint.degrees}
-                placeholder="Degrees"
-                class="w-full px-2 py-1 border rounded text-sm mt-1 dark:bg-neutral-700 dark:border-neutral-600 min-w-0"
+                      type="number"
+                      step="0.001"
+                      bind:value={line.endPoint.degrees}
+                      placeholder="Degrees"
+                      class="w-full px-2 py-1 border rounded text-sm mt-1 dark:bg-neutral-700 dark:border-neutral-600 min-w-0"
               />
             {:else if line.endPoint.heading === "tangential"}
               <label class="flex items-center mt-1">
                 <input
-                  type="checkbox"
-                  bind:checked={line.endPoint.reverse}
-                  class="mr-2"
+                        type="checkbox"
+                        bind:checked={line.endPoint.reverse}
+                        class="mr-2"
                 />
                 <span class="text-sm">Reverse</span>
               </label>

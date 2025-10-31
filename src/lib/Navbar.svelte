@@ -45,9 +45,9 @@ public ArrayList<Pose2d> pathPoses;
 
 public void generatePath() {
     pathPoses = new ArrayList<>();
-    pathPoses.add(new Pose2d(${startPoint.x}, ${startPoint.y}, ${startPoint.startDeg ?? 0})); // Starting Pose
+    pathPoses.add(new Pose2d(${startPoint.x - 72.0}, ${startPoint.y  - 72.0}, ${startPoint.startDeg ?? 0})); // Starting Pose
 ${lines.map((line, idx) =>
-            `    pathPoses.add(new Pose2d(${line.endPoint.x}, ${line.endPoint.y}, ${line.endPoint.endDeg ?? 0})); // Line ${idx + 1}`
+            `    pathPoses.add(new Pose2d(${line.endPoint.x  - 72.0}, ${line.endPoint.y  - 72.0}, ${line.endPoint.endDeg ?? 0})); // Line ${idx + 1}`
     ).join('\n')}
 }
 
@@ -189,15 +189,15 @@ ${lines.map((line, idx) =>
       title="Delete/Reset path"
       on:click={() => {
        startPoint = {
-    x: 56,
-    y: 8,
+    x: 0,
+    y: 0,
     heading: "linear",
     startDeg: 90,
     endDeg: 180
   };
   lines = [
     {
-      endPoint: { x: 56, y: 36, heading: "linear", startDeg: 90, endDeg: 180 },
+      endPoint: { x: 48, y: 48, heading: "linear", startDeg: 90, endDeg: 180 },
       controlPoints: [],
       color: getRandomColor(),
     },
