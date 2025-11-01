@@ -45,9 +45,9 @@ public ArrayList<Pose2d> pathPoses;
 
 public void generatePath() {
     pathPoses = new ArrayList<>();
-    pathPoses.add(new Pose2d(${startPoint.x}, ${startPoint.y}, ${startPoint.startDeg ?? 0})); // Starting Pose
+    pathPoses.add(new Pose2d(${startPoint.x}, ${startPoint.y}, Math.toRadians(${startPoint.startDeg ?? 0}))); // Starting Pose
 ${lines.map((line, idx) =>
-            `    pathPoses.add(new Pose2d(${line.endPoint.x}, ${line.endPoint.y}, ${line.endPoint.endDeg ?? 0})); // Line ${idx + 1}`
+            `    pathPoses.add(new Pose2d(${line.endPoint.x}, ${line.endPoint.y}, Math.toRadians(${line.endPoint.endDeg ?? 0}))); // Line ${idx + 1}`
     ).join('\n')}
 }
 
