@@ -30,8 +30,7 @@ This project is underneath the Apache License, like the Pedro Pathing visualizer
 </tr>
 </table>
 
-<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
-
+---
 
 ## Features
 
@@ -62,8 +61,7 @@ You can control animations and lines starting point:
 </tr>
 </table>
 
-<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
-
+---
 
 ## Top Features
 
