@@ -14,6 +14,7 @@
   export let saveFile: () => any;
   export let loadFile: (evt: any) => any;
   export let loadRobot: (evt: any) => any;
+  export let loadFromCode: (code: string) => boolean;
   // export let rotateFieldLeft: () => void;
   // export let rotateFieldRight: () => void;
 
@@ -22,6 +23,20 @@
   export let lines: Line[];
 
   let dialogOpen = false;
+  let pasteDialogOpen = false;
+  let pasteCode = "";
+  let pasteError = false;
+
+  function handleGeneratePath() {
+    const success = loadFromCode(pasteCode);
+    if (success) {
+      pasteDialogOpen = false;
+      pasteCode = "";
+      pasteError = false;
+    } else {
+      pasteError = true;
+    }
+  }
 
   onMount(() => {
     darkMode.subscribe((val) => {
@@ -219,6 +234,22 @@ ${lines.map((line, idx) =>
         />
       </svg>
     </button>
+    <button title="Import path from pasted code" on:click={() => { pasteDialogOpen = true; pasteError = false; }}>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="2"
+        stroke="currentColor"
+        class="size-6"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5A3.375 3.375 0 0 0 6.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-1.5a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9Z"
+        />
+      </svg>
+    </button>
     <button title="Export path to code" on:click={exportToCode}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -291,6 +322,67 @@ ${lines.map((line, idx) =>
     </button>
   </div>
 </div>
+{#if pasteDialogOpen}
+  <div
+    transition:fade={{ duration: 300, easing: cubicInOut }}
+    class="bg-black bg-opacity-40 flex flex-col justify-center items-center absolute top-0 left-0 w-full h-full z-[1005]"
+  >
+    <div
+      transition:fly={{ duration: 300, easing: cubicInOut, y: 20 }}
+      class="flex flex-col justify-start items-start p-5 bg-white dark:bg-neutral-900 rounded-xl w-full max-w-2xl gap-3 shadow-2xl"
+    >
+      <!-- Header -->
+      <div class="flex flex-row justify-between items-center w-full">
+        <div class="flex flex-col gap-0.5">
+          <p class="text-base font-semibold dark:text-white">Import from Code</p>
+          <p class="text-xs font-light text-neutral-500 dark:text-neutral-400">
+            Paste your <code class="bg-neutral-100 dark:bg-neutral-800 px-1 rounded text-[11px]">pathPoses.add(new Pose2d(...))</code> lines below
+          </p>
+        </div>
+        <button
+          on:click={() => { pasteDialogOpen = false; pasteError = false; }}
+          class="p-1 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded transition-colors"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-5 text-neutral-500">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Textarea -->
+      <textarea
+        bind:value={pasteCode}
+        placeholder="pathPoses.add(new Pose2d(-48.5, 58.4, Math.toRadians(53)));&#10;pathPoses.add(new Pose2d(-13.6, 12.5, Math.toRadians(15)));&#10;..."
+        rows="10"
+        class="w-full rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-sm font-mono p-3 resize-y focus:outline-none focus:ring-2 focus:ring-[#b300e6] dark:text-white placeholder:text-neutral-400"
+      />
+
+      <!-- Error banner -->
+      {#if pasteError}
+        <p class="text-xs text-red-500 dark:text-red-400">
+          ⚠️ No valid <code>Pose2d</code> entries found. Make sure you're pasting the correct format.
+        </p>
+      {/if}
+
+      <!-- Actions -->
+      <div class="flex flex-row justify-end gap-2 w-full">
+        <button
+          on:click={() => { pasteDialogOpen = false; pasteError = false; }}
+          class="px-4 py-1.5 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors dark:text-white"
+        >
+          Cancel
+        </button>
+        <button
+          on:click={handleGeneratePath}
+          class="px-4 py-1.5 text-sm rounded-lg bg-[#b300e6] text-white font-medium hover:bg-[#9900c4] transition-colors"
+        >
+          Generate Path
+        </button>
+      </div>
+    </div>
+  </div>
+{/if}
+
 {#if dialogOpen}
   <div
     transition:fade={{ duration: 500, easing: cubicInOut }}
