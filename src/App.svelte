@@ -458,6 +458,65 @@
     URL.revokeObjectURL(url);
   }
 
+  function parsePoseCodeFormat(text: string): { startPoint: Point; lines: Line[] } | null {
+    // Match lines like: pathPoses.add(new Pose2d(x, y, Math.toRadians(deg)));
+    const poseRegex = /new\s+Pose2d\s*\(\s*([+-]?[\d.eE+-]+)\s*,\s*([+-]?[\d.eE+-]+)\s*,\s*Math\.toRadians\s*\(\s*([+-]?[\d.eE+-]+)\s*\)\s*\)/g;
+
+    const poses: { x: number; y: number; deg: number }[] = [];
+
+    let match: RegExpExecArray | null;
+    while ((match = poseRegex.exec(text)) !== null) {
+      poses.push({
+        x: parseFloat(match[1]),
+        y: parseFloat(match[2]),
+        deg: parseFloat(match[3]),
+      });
+    }
+
+    if (poses.length === 0) return null;
+
+    const [first, ...rest] = poses;
+
+    const newStartPoint: Point = {
+      x: first.x,
+      y: first.y,
+      heading: "constant",
+      degrees: first.deg,
+    };
+
+    const newLines: Line[] = rest.map((pose) => ({
+      endPoint: {
+        x: pose.x,
+        y: pose.y,
+        heading: "constant",
+        degrees: pose.deg,
+      } as Point,
+      controlPoints: [],
+      color: getRandomColor(),
+    }));
+
+    // Need at least one line
+    if (newLines.length === 0) {
+      newLines.push({
+        endPoint: { x: first.x, y: first.y, heading: "constant", degrees: first.deg } as Point,
+        controlPoints: [],
+        color: getRandomColor(),
+      });
+    }
+
+    return { startPoint: newStartPoint, lines: newLines };
+  }
+
+  function loadFromCode(code: string): boolean {
+    const parsed = parsePoseCodeFormat(code);
+    if (parsed) {
+      startPoint = parsed.startPoint;
+      lines = parsed.lines;
+      return true;
+    }
+    return false;
+  }
+
   function loadFile(evt: Event) {
     const elem = evt.target as HTMLInputElement;
     const file = elem.files?.[0];
@@ -566,7 +625,7 @@
   });
 </script>
 
-<Navbar bind:lines bind:startPoint {saveFile} {loadFile} {loadRobot} />
+<Navbar bind:lines bind:startPoint {saveFile} {loadFile} {loadRobot} {loadFromCode} />
 <div
         class="w-screen h-screen pt-20 p-2 flex flex-row justify-center items-center gap-4"
 >
