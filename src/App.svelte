@@ -92,12 +92,11 @@
     x: 0,
     y: -64,
     heading: "linear",
-    startDeg: 90,
-    endDeg: 180
+    deg: 90
   };
   let lines: Line[] = [
     {
-      endPoint: { x: 0, y: 0, heading: "linear", startDeg: 90, endDeg: 180 },
+      endPoint: { x: 0, y: 0, heading: "linear", deg: 180 },
       controlPoints: [],
       color: getRandomColor(),
     },
@@ -271,16 +270,18 @@
     let transformedRobotXY = transformCoordinates(robotInchesXY);
     robotXY = { x: x(transformedRobotXY.x) + (twoElement?.clientWidth ?? 0) / 2, y: y(transformedRobotXY.y) + (twoElement?.clientHeight ?? 0) / 2 };
 
+    const prevPoint = currentLineIdx === 0 ? startPoint : lines[currentLineIdx - 1].endPoint;
+
     switch (currentLine.endPoint.heading) {
       case "linear":
         robotHeading = -shortestRotation(
-                currentLine.endPoint.startDeg,
-                currentLine.endPoint.endDeg,
+                prevPoint.deg,
+                currentLine.endPoint.deg,
                 linePercent
         );
         break;
       case "constant":
-        robotHeading = -currentLine.endPoint.degrees;
+        robotHeading = -currentLine.endPoint.deg;
         break;
       case "tangential":
         const nextPointInches = getCurvePoint(
@@ -480,16 +481,16 @@
     const newStartPoint: Point = {
       x: first.x,
       y: first.y,
-      heading: "constant",
-      degrees: first.deg,
+      heading: "linear",
+      deg: first.deg,
     };
 
     const newLines: Line[] = rest.map((pose) => ({
       endPoint: {
         x: pose.x,
         y: pose.y,
-        heading: "constant",
-        degrees: pose.deg,
+        heading: "linear",
+        deg: pose.deg,
       } as Point,
       controlPoints: [],
       color: getRandomColor(),
@@ -498,7 +499,7 @@
     // Need at least one line
     if (newLines.length === 0) {
       newLines.push({
-        endPoint: { x: first.x, y: first.y, heading: "constant", degrees: first.deg } as Point,
+        endPoint: { x: first.x, y: first.y, heading: "linear", deg: first.deg } as Point,
         controlPoints: [],
         color: getRandomColor(),
       });
@@ -578,7 +579,8 @@
         endPoint: {
           x: _.random(-36, 36),
           y: _.random(-36, 36),
-          heading: "tangential",
+          heading: "linear",
+          deg: lines.length > 0 ? lines[lines.length - 1].endPoint.deg : startPoint.deg,
           reverse: false,
         },
         controlPoints: [],
