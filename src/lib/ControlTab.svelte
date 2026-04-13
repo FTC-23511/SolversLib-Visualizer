@@ -22,7 +22,8 @@
         endPoint: {
           x: _.random(-36, 36),
           y: _.random(-36, 36),
-          heading: "tangential",
+          heading: "linear",
+          deg: lines.length > 0 ? lines[lines.length - 1].endPoint.deg : startPoint.deg,
           reverse: false,
         },
         controlPoints: [],
@@ -36,7 +37,8 @@
       endPoint: {
         x: _.random(-36, 36),
         y: _.random(-36, 36),
-        heading: "tangential" as const, // <-- Fix is here
+        heading: "linear" as const,
+        deg: lines[idx].endPoint.deg,
         reverse: false,
       },
       controlPoints: [],
@@ -156,6 +158,15 @@
                   class="w-full px-2 py-1 border rounded dark:bg-neutral-700 dark:border-neutral-600 text-sm"
           />
         </div>
+        <div class="col-span-2">
+          <label class="text-sm font-medium">Heading (deg)</label>
+          <input
+                  type="number"
+                  step="0.001"
+                  bind:value={startPoint.deg}
+                  class="w-full px-2 py-1 border rounded dark:bg-neutral-700 dark:border-neutral-600 text-sm"
+          />
+        </div>
       </div>
     </div>
 
@@ -271,31 +282,16 @@
               <option value="constant">Constant</option>
             </select>
 
-            {#if line.endPoint.heading === "linear"}
-              <div class="grid grid-cols-2 gap-2 mt-1">
+            {#if line.endPoint.heading === "linear" || line.endPoint.heading === "constant"}
+              <div class="mt-1">
                 <input
                         type="number"
                         step="0.001"
-                        bind:value={line.endPoint.startDeg}
-                        placeholder="Start Deg"
-                        class="px-2 py-1 border rounded text-sm dark:bg-neutral-700 dark:border-neutral-600 min-w-0"
-                />
-                <input
-                        type="number"
-                        step="0.001"
-                        bind:value={line.endPoint.endDeg}
-                        placeholder="End Deg"
-                        class="px-2 py-1 border rounded text-sm dark:bg-neutral-700 dark:border-neutral-600 min-w-0"
+                        bind:value={line.endPoint.deg}
+                        placeholder="Degrees"
+                        class="w-full px-2 py-1 border rounded text-sm dark:bg-neutral-700 dark:border-neutral-600 min-w-0"
                 />
               </div>
-            {:else if line.endPoint.heading === "constant"}
-              <input
-                      type="number"
-                      step="0.001"
-                      bind:value={line.endPoint.degrees}
-                      placeholder="Degrees"
-                      class="w-full px-2 py-1 border rounded text-sm mt-1 dark:bg-neutral-700 dark:border-neutral-600 min-w-0"
-              />
             {:else if line.endPoint.heading === "tangential"}
               <label class="flex items-center mt-1">
                 <input
