@@ -7,23 +7,15 @@ type Point = BasePoint &
   (
     | {
         heading: "linear";
-        startDeg: number;
-        endDeg: number;
-        degrees?: never;
-        reverse?: never;
+        deg: number;
       }
     | {
         heading: "constant";
-        degrees: number;
-        startDeg?: never;
-        endDeg?: never;
-        reverse?: never;
+        deg: number;
       }
     | {
         heading: "tangential";
-        degrees?: never;
-        startDeg?: never;
-        endDeg?: never;
+        deg: number;
         reverse: boolean;
       }
   );
